@@ -19,9 +19,10 @@ ABI  := ilp32
 # ---------------- Argument handling ----------------
 ARG := $(word 2, $(MAKECMDGOALS))
 
-# Source and output directories (repo root).
-ROOT_DIR  := $(CURDIR)
-SRC_DIR   := $(ROOT_DIR)
+# Source and output directories (repo root, based on this Makefile location).
+MAKEFILE_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+ROOT_DIR  := $(abspath $(MAKEFILE_DIR)/..)
+SRC_DIR   := $(ROOT_DIR)/src
 BUILD_DIR := $(ROOT_DIR)/build
 
 # ---------------- Flags ----------------
