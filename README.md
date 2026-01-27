@@ -17,28 +17,21 @@ This repository is a structured notes with executable code, focused on RV32 bare
 - qemu-system-riscv32
 - Docker (optional, for a containerized toolchain)
 
-## 1.3. Hex Editor
-
-The image also includes the `dz6` TUI hex editor:
-
-```bash
-docker run --rm -it -v "$PWD":/work -w /work riscv-experiments dz6 /work/build/m-001.bin
-```
-
-## 1.4. PoC builds
+## 1.3. PoC builds (No Docker)
 
 - From repository root directory: 
 ```bash
 cd riscv-experiments/
 make compile m-001
+make run m-001
 ```
 
-## 1.5. Docker (optional)
+## 1.4. Docker (optional)
 
 If you prefer a containerized toolchain, this repo includes a Dockerfile based on Ubuntu 24.04
 with the RISC-V cross-compiler, QEMU, GDB, and Pwndbg installed.
 
-### 1.5.1. Build the image
+### 1.4.1. Build the image
 
 > [!IMPORTANT]
 > When running QEMU via `make run`, use an interactive TTY so QEMU receives the
@@ -50,7 +43,7 @@ with the RISC-V cross-compiler, QEMU, GDB, and Pwndbg installed.
 docker build -t riscv-experiments .
 ```
 
-### 1.5.2. Run a shell with the repo mounted at `/work`:
+### 1.4.2. Run a shell with the repo mounted at `/work`:
 
 ```bash
 docker run --rm -it -v "$PWD":/work -w /work riscv-experiments
@@ -58,13 +51,21 @@ make compile m-001
 make run m-001
 ```
 
-### 1.5.3. Run the usual targets inside the container:
+### 1.4.3. Run the usual targets inside the container:
 
 ```bash
-docker run --rm -it -v "$PWD":/work -w /work riscv-experiments make run m-001
+docker run --rm -it -v "$PWD":/work -w /work riscv-experiments make run psylinux
 ```
 
-### 1.5.4. Debugging with GDB
+### 1.4.4. Hex Editor
+
+The image also includes the `dz6` TUI hex editor:
+
+```bash
+docker run --rm -it -v "$PWD":/work -w /work riscv-experiments dz6 /work/build/psylinux.elf
+```
+
+### 1.4.5. Debugging with GDB
 
 > [!IMPORTANT]
 > If you run the GDB server and client in separate containers, publish the port
@@ -85,7 +86,7 @@ docker run --rm -it -v "$PWD":/work -w /work riscv-experiments make gdbconnect p
 > [!WARNING]
 > In GDB, use `continue` (not `run`) to start the paused QEMU target.
 
-#### 1.5.4.1. GDB Server on Docker and GDB Client on Host
+#### 1.4.5.1. GDB Server on Docker and GDB Client on Host
 
 You need to remap debug paths to the host for source lookup in GDB.
 
@@ -104,15 +105,15 @@ gdb build/psylinux.elf \
   -ex "continue"
 ```
 
-### 1.5.5. Troubleshooting
+### 1.4.6. Troubleshooting
 
-#### 1.5.5.1. Port Mapping
+#### 1.4.6.1. Port Mapping
 - If `-p 1234:1234` fails with "port is already allocated", either stop the
   process using `1234` or map a different host port.
 - If GDB says "could not connect", confirm the server container is running and
   the host port matches `GDB_TARGET`.
 
-#### 1.5.5.2. GDB can't find sources
+#### 1.4.6.2. GDB can't find sources
 
 If GDB can't find sources because paths are `/work/...`, rebuild with a debug
 path remap (this rewrites paths stored in DWARF):
@@ -125,12 +126,12 @@ docker run --rm -it -v "$PWD":/work -w /work riscv-experiments make psylinux DEB
 ```
 
 
-#### 1.5.5.3. Find Docker containers using 1234
+#### 1.4.6.3. Find Docker containers using 1234
 ```bash
 docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Ports}}"
 ```
 
-#### 1.5.5.4. Or find any process using 1234
+#### 1.4.6.4. Or find any process using 1234
 ```bash
 lsof -nP -iTCP:1234 -sTCP:LISTEN
 ```
