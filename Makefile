@@ -8,4 +8,5 @@ __forward:
 ifneq ($(strip $(MAKECMDGOALS)),)
 .PHONY: $(MAKECMDGOALS)
 $(MAKECMDGOALS): __forward
+	@:
 endif
