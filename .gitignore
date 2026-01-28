@@ -1,4 +1,4 @@
-/build
+build/
 .gdb_history
 .DS_Store
 *.swp
