@@ -2,7 +2,7 @@
 # RISC-V Makefile (rv32im) - PoC builds
 # ============================================================
 # Run from repo root with:
-#   make compile m-001
+#   make compile infinite_loop
 # ============================================================
 
 # ---------------- Toolchain ----------------
@@ -53,7 +53,7 @@ BIN := $(BUILD_DIR)/$(ARG_BASE).bin
 # Common runtime for C examples.
 RUNTIME_SRCS := $(SRC_DIR)/start.s $(SRC_DIR)/uart.c
 
-# Avoid errors for the extra argument target (e.g., "m-001") while allowing real targets.
+# Avoid errors for the extra argument target (e.g., "infinite_loop") while allowing real targets.
 ifneq ($(strip $(ARG)),)
 ifneq ($(filter $(ARG),$(KNOWN_TARGETS)), $(ARG))
 .PHONY: $(ARG)
@@ -74,7 +74,7 @@ assemble: $(BUILD_DIR)
 # Compile .s or .c into an ELF, then extract a raw binary.
 .PHONY: compile
 compile: $(BUILD_DIR)
-	@test -n "$(ARG)" || (echo "Use: make compile m-001" && exit 1)
+	@test -n "$(ARG)" || (echo "Use: make compile infinite_loop" && exit 1)
 	@if [ "$(ARG_EXT)" = ".c" ]; then \
 	  $(CC) $(CFLAGS) $(LDFLAGS) $(RUNTIME_SRCS) $(SRC_C) -o $(ELF); \
 	else \
@@ -90,7 +90,7 @@ compile: $(BUILD_DIR)
 # Dump the raw binary as 32-bit little-endian words.
 .PHONY: printbinary
 printbinary:
-	@test -n "$(ARG)" || (echo "Use: make printbinary m-001" && exit 1)
+	@test -n "$(ARG)" || (echo "Use: make printbinary infinite_loop" && exit 1)
 	@test -f "$(BIN)" || (echo "File $(BIN) not found" && exit 1)
 	@printf "==============================\n"
 	xxd -e -c 4 -g 4 $(BIN)
@@ -113,7 +113,7 @@ gdbserver: $(BUILD_TARGET)
 # NOTE: Prefer ~/.gdbinit if it already sources pwndbg to avoid double-loading.
 .PHONY: gdbconnect
 gdbconnect: $(BUILD_TARGET)
-	@test -n "$(ARG)" || (echo "Use: make connectgdb m-001" && exit 1)
+	@test -n "$(ARG)" || (echo "Use: make connectgdb infinite_loop" && exit 1)
 	@if ! command -v $(GDB) >/dev/null 2>&1; then \
 	  echo "GDB not found: install gdb."; \
 	  exit 1; \

@@ -22,8 +22,8 @@ This repository is a structured notes with executable code, focused on RV32 bare
 - From repository root directory: 
 ```bash
 cd riscv-experiments/
-make compile m-001
-make run m-001
+make compile infinite_loop
+make run infinite_loop
 ```
 
 ## 1.4. Docker (optional)
@@ -47,8 +47,8 @@ docker build -t riscv-experiments .
 
 ```bash
 docker run --rm -it -v "$PWD":/work -w /work riscv-experiments
-make compile m-001
-make run m-001
+make compile infinite_loop
+make run infinite_loop
 ```
 
 ### 1.4.3. Run the usual targets inside the container:
@@ -75,12 +75,12 @@ docker run --rm -it -v "$PWD":/work -w /work riscv-experiments dz6 /work/build/p
 
 - Terminal 1 (GDB server)
 ```bash
-docker run --rm -it -v "$PWD":/work -w /work -p 1234:1234 riscv-experiments make gdbserver psylinux
+docker run --rm -it -v "$PWD":/work -w /work -p 1234:1234 riscv-experiments make gdbserver do_while.c
 ```
 
 - Terminal 2 (GDB client)
 ```bash
-docker run --rm -it -v "$PWD":/work -w /work riscv-experiments make gdbconnect psylinux GDB_TARGET=host.docker.internal:1234
+docker run --rm -it -v "$PWD":/work -w /work riscv-experiments make gdbconnect do_while.c GDB_TARGET=host.docker.internal:1234
 ```
 
 > [!WARNING]
@@ -135,4 +135,3 @@ docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Ports}}"
 ```bash
 lsof -nP -iTCP:1234 -sTCP:LISTEN
 ```
-
